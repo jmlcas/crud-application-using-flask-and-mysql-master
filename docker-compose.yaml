@@ -5,7 +5,7 @@ services:
 # MYSQL #
 
   phonebook-mysql:
-    container_name: phone-mysql2
+    container_name: phone-mysql
     build:
       context: .
       dockerfile: Dockerfile-mysql
@@ -14,46 +14,46 @@ services:
       - ./db_data:/var/lib/mysql  
     restart: "no"
     networks:
-      - phone-02 
+      - agenda 
 
 # APP #
 
   phonebook-app:
-    container_name: phone-app2
+    container_name: phone-app
     build:
       context: .
       dockerfile: Dockerfile-app
     depends_on:
       - phonebook-mysql
     ports:
-      - "8200:8181"
+      - "8100:8181"
     restart: "no"
     networks:
-      - phone-02 
+      - agenda 
 
 # PHPMYADMIN #             
        
   phonebook-pma:
-    container_name: phone-pma2
+    container_name: phone-pma
     image: phpmyadmin/phpmyadmin     
     depends_on:      
       - phonebook-mysql
     ports:      
-      - "8182:80"    
+      - "8180:80"    
     restart: "no"   
     environment:
      - PMA_ARBITRARY=1 
-     - PMA_HOST=phone-mysql2
+     - PMA_HOST=phone-mysql
      - PMA_USER=dev 
      - PMA_PASSWORD=dev 
     networks:
-      - phone-02 
+      - agenda 
     
 volumes:
   db_data:
 
 networks:
-  phone-02:     
+  agenda:     
 
 
 
