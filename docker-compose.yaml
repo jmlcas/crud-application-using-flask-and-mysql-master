@@ -1,0 +1,59 @@
+version: '3'
+
+services:
+
+# MYSQL #
+
+  phonebook-mysql:
+    container_name: phone-mysql2
+    build:
+      context: .
+      dockerfile: Dockerfile-mysql
+    command: --default-authentication-plugin=mysql_native_password       
+    volumes:
+      - ./db_data:/var/lib/mysql  
+    restart: "no"
+    networks:
+      - phone-02 
+
+# APP #
+
+  phonebook-app:
+    container_name: phone-app2
+    build:
+      context: .
+      dockerfile: Dockerfile-app
+    depends_on:
+      - phonebook-mysql
+    ports:
+      - "8200:8181"
+    restart: "no"
+    networks:
+      - phone-02 
+
+# PHPMYADMIN #             
+       
+  phonebook-pma:
+    container_name: phone-pma2
+    image: phpmyadmin/phpmyadmin     
+    depends_on:      
+      - phonebook-mysql
+    ports:      
+      - "8182:80"    
+    restart: "no"   
+    environment:
+     - PMA_ARBITRARY=1 
+     - PMA_HOST=phone-mysql2
+     - PMA_USER=dev 
+     - PMA_PASSWORD=dev 
+    networks:
+      - phone-02 
+    
+volumes:
+  db_data:
+
+networks:
+  phone-02:     
+
+
+
